@@ -1,7 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link, useParams } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
-import { nanoid } from "nanoid";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { useEventSource } from "remix-utils/sse/react";
@@ -12,6 +11,7 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { storeAttendances } from "~/services/attendance";
 import type { Attendance } from "~/schema/attendance";
+import type { RandomUid } from "./sse.random.$id";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms
@@ -22,19 +22,22 @@ export const meta: MetaFunction = () => {
 export default function AttendancePage() {
 	const params = useParams();
 	const attendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
+	const randomUid = useEventSource(`/sse/random/${params.id}`, { event: params.id });
 	const parsedAttendances = useMemo<Attendance[]>(
 		() => (attendances === null ? [] : JSON.parse(attendances)),
 		[attendances]
 	);
-	const [randomUid, setRandomUid] = useState(nanoid());
-	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
+	const parsedRandomUid = useMemo<RandomUid | null>(
+		() => (randomUid === null ? null : JSON.parse(randomUid)),
+		[randomUid]
+	);
+	const [timeLeft, setTimeLeft] = useState((parsedRandomUid?.expiredAt ?? Date.now()) - Date.now());
 	const progressValue = (timeLeft / QR_UPDATE_DURATION) * 100;
 	const qrTimeout = useRef<NodeJS.Timeout>();
 
 	const updateRandomUid = useCallback(() => {
 		return setTimeout(() => {
 			if (timeLeft <= 0) {
-				setRandomUid(nanoid());
 				setTimeLeft(QR_UPDATE_DURATION);
 				qrTimeout.current = updateRandomUid();
 			} else {
@@ -55,6 +58,11 @@ export default function AttendancePage() {
 		})();
 	}, [params.id, parsedAttendances]);
 
+	useEffect(() => {
+		if (parsedRandomUid === null) return;
+		setTimeLeft((parsedRandomUid.expiredAt ?? Date.now()) - Date.now());
+	}, [parsedRandomUid]);
+
 	return (
 		<div className="flex flex-col items-center justify-center pt-32 gap-8">
 			<div className="flex flex-col lg:flex-row gap-8 px-8">
@@ -63,7 +71,7 @@ export default function AttendancePage() {
 						<QRCode
 							size={480}
 							style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-							value={randomUid}
+							value={parsedRandomUid?.randomUid}
 							ecLevel="H"
 							logoImage="/wri-logo-small.png"
 							removeQrCodeBehindLogo
