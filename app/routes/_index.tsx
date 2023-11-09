@@ -5,6 +5,7 @@ import { useLayoutEffect, useState } from "react";
 import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-dialog";
 import { FormCard } from "~/components/attendance/form-card";
 import { Button } from "~/components/ui/button";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { AttendanceForm } from "~/schema/attendance";
 import { createAttendanceForm, getAllAttendanceForms } from "~/services/attendance";
@@ -37,7 +38,10 @@ export default function Index() {
 					</Link>
 					<CreateAttendanceFormDialog
 						onCreate={(detail) => {
-							createAttendanceForm(detail);
+							createAttendanceForm({
+								...detail,
+								mentors: detail.mentors.filter((mentor) => mentor !== ""),
+							});
 							navigate(`/attendance/${detail.id}`);
 						}}
 					/>
@@ -47,13 +51,15 @@ export default function Index() {
 				<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
 				<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
 				<Separator className="my-4" />
-				<div className="flex flex-col gap-4">
-					{attendanceForms.map((form) => (
-						<Link key={form.id} to={`/attendance/${form.id}`} className="w-full">
-							<FormCard {...form} />
-						</Link>
-					))}
-				</div>
+				<ScrollArea className="h-[500px]">
+					<div className="flex flex-col gap-4 pr-4">
+						{attendanceForms.map((form) => (
+							<Link key={form.id} to={`/attendance/${form.id}`} className="w-full">
+								<FormCard {...form} />
+							</Link>
+						))}
+					</div>
+				</ScrollArea>
 			</div>
 		</div>
 	);

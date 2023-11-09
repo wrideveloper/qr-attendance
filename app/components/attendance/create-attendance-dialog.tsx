@@ -3,13 +3,14 @@ import { nanoid } from "nanoid";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import type { AttendanceForm } from "~/schema/attendance";
+import { attendanceFormSchema, type AttendanceForm } from "~/schema/attendance";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { miniclass, miniclassType } from "~/data/miniclass";
 import { DynamicInput } from "../form/dynamic-input";
 import { FilePlus } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type CreateAttendanceFormDialogProps = {
 	onCreate: (detail: AttendanceForm) => void;
@@ -22,6 +23,7 @@ export function CreateAttendanceFormDialog(props: CreateAttendanceFormDialogProp
 			date: new Date(),
 			mentors: [],
 		},
+		resolver: zodResolver(attendanceFormSchema),
 	});
 
 	return (
@@ -38,7 +40,10 @@ export function CreateAttendanceFormDialog(props: CreateAttendanceFormDialogProp
 				</DialogHeader>
 				<Separator />
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(props.onCreate)} className="space-y-6">
+					<form
+						onSubmit={form.handleSubmit(props.onCreate, (error) => console.log({ error }))}
+						className="space-y-6"
+					>
 						<FormField
 							control={form.control}
 							name="miniclass"
@@ -121,7 +126,9 @@ export function CreateAttendanceFormDialog(props: CreateAttendanceFormDialogProp
 								</FormItem>
 							)}
 						/>
-						<Button className="w-full">Create</Button>
+						<Button className="w-full" disabled={!form.formState.isValid}>
+							Create
+						</Button>
 					</form>
 				</Form>
 			</DialogContent>

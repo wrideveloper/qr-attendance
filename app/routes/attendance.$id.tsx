@@ -45,7 +45,7 @@ export default function AttendancePage() {
 	}, [timeLeft]);
 
 	return (
-		<div>
+		<div className="flex flex-col items-center justify-center h-full">
 			<div className="flex gap-4">
 				<div className="flex flex-col gap-2">
 					<div className="w-[500px] h-[500px]">
@@ -63,13 +63,13 @@ export default function AttendancePage() {
 					<Progress value={progressValue} className="bg-slate-300 h-4" />
 				</div>
 				<div>
-					<h1 className="text-2xl font-bold">Attendance</h1>
+					<h1 className="text-2xl font-bold text-slate-800">Attendance</h1>
 					<p className="text-gray-500">Scan the QR code with your phone to mark your attendance.</p>
 					<Separator className="my-4" />
 					<ScrollArea className="w-[480px] h-[480px]">
 						<Card className="flex items-center justify-between p-4">
 							<div className="flex flex-col">
-								<span className="text-xl font-medium">Manusia Bernapas</span>
+								<span className="text-lg font-semibold text-slate-800">Manusia Bernapas</span>
 								<span className="text-sm text-slate-800">2I - Teknik Informatika</span>
 							</div>
 							<span className="text-lg">21:32</span>

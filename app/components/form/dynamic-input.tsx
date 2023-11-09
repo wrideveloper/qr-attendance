@@ -49,14 +49,14 @@ export function DynamicInput(props: DynamicInputProps) {
 						variant="destructive"
 						size="icon"
 						className="px-2"
-						role="button"
+						type="button"
 						onClick={() => remove(index)}
 					>
 						<XIcon className="h-5 w-5" />
 					</Button>
 				</div>
 			))}
-			<Button variant="secondary" onClick={add}>
+			<Button variant="secondary" onClick={add} type="button">
 				<PlusIcon className="text-slate-600" />
 			</Button>
 		</div>

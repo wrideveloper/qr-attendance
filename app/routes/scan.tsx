@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 
 export default function ScanPage() {
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="h-full flex flex-col gap-4 items-center justify-center">
 			<div className="w-64 h-64 rounded-md overflow-hidden">
 				<QrScanner
 					containerStyle={{ width: "100%", height: "100%" }}
