@@ -1,14 +1,16 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, useNavigate } from "@remix-run/react";
 import { QrCodeIcon } from "lucide-react";
 import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-dialog";
 import { Button } from "~/components/ui/button";
+import { createAttendanceForm } from "~/services/attendance";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "WRI QR Attendance" }, { name: "description", content: "Welcome to Remix!" }];
 };
 
 export default function Index() {
+	const navigate = useNavigate();
 	return (
 		<div className="h-full flex flex-col gap-8 items-center justify-center">
 			<img src="/wri-logo.png" alt="WRI Logo" className="w-72" />
@@ -21,7 +23,8 @@ export default function Index() {
 				</Link>
 				<CreateAttendanceFormDialog
 					onCreate={(detail) => {
-						console.log({ detail });
+						createAttendanceForm(detail);
+						navigate(`/attendance/${detail.id}`);
 					}}
 				/>
 			</div>
