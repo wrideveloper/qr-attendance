@@ -45,7 +45,13 @@ export function DynamicInput(props: DynamicInputProps) {
 						onChange={(value) => onChange(capitalise(value), index)}
 						defaultValue={mentor}
 					/>
-					<Button variant="destructive" size="icon" className="px-2" onClick={() => remove(index)}>
+					<Button
+						variant="destructive"
+						size="icon"
+						className="px-2"
+						role="button"
+						onClick={() => remove(index)}
+					>
 						<XIcon className="h-5 w-5" />
 					</Button>
 				</div>

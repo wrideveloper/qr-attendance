@@ -24,7 +24,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full flex items-center justify-center">
+      <body className="h-full">
         <Outlet />
         <ScrollRestoration />
         <Scripts />
