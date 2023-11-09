@@ -26,7 +26,7 @@ export default function Index() {
 	}, []);
 
 	return (
-		<div className="flex flex-col md:flex-row gap-28 items-center h-full max-w-screen-xl mx-auto">
+		<div className="flex flex-col md:flex-row gap-28 items-center h-full max-w-screen-xl mx-auto px-8">
 			<div className="flex-1 h-full flex flex-col gap-8 items-end justify-center">
 				<img src="/wri-logo.png" alt="WRI Logo" className="w-72" />
 				<div className="flex flex-col gap-2 w-72">
@@ -47,20 +47,22 @@ export default function Index() {
 					/>
 				</div>
 			</div>
-			<div className="flex-1">
-				<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
-				<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
-				<Separator className="my-4" />
-				<ScrollArea className="h-[500px]">
-					<div className="flex flex-col gap-4 pr-4">
-						{attendanceForms.map((form) => (
-							<Link key={form.id} to={`/attendance/${form.id}`} className="w-full">
-								<FormCard {...form} />
-							</Link>
-						))}
-					</div>
-				</ScrollArea>
-			</div>
+			{attendanceForms.length > 0 && (
+				<div className="flex-1">
+					<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
+					<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
+					<Separator className="my-4" />
+					<ScrollArea className="h-[500px]">
+						<div className="flex flex-col gap-4 pr-4">
+							{attendanceForms.map((form) => (
+								<Link key={form.id} to={`/attendance/${form.id}`} className="w-full">
+									<FormCard {...form} />
+								</Link>
+							))}
+						</div>
+					</ScrollArea>
+				</div>
+			)}
 		</div>
 	);
 }

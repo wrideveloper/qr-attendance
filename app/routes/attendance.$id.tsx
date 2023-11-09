@@ -56,14 +56,15 @@ export default function AttendancePage() {
 	}, [params.id, parsedAttendances]);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full gap-8">
-			<div className="flex gap-8">
+		<div className="flex flex-col items-center justify-center pt-32 gap-8">
+			<div className="flex flex-col lg:flex-row gap-8 px-8">
 				<div className="flex flex-col gap-2">
 					<div className="w-[500px] h-[500px]">
 						<QRCode
 							size={480}
 							style={{ height: "auto", maxWidth: "100%", width: "100%" }}
 							value={randomUid}
+							ecLevel="H"
 							logoImage="/wri-logo-small.png"
 							removeQrCodeBehindLogo
 							logoPadding={8}
