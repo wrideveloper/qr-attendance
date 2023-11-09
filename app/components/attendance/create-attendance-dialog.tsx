@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { miniclass, miniclassType } from "~/data/miniclass";
 import { DynamicInput } from "../form/dynamic-input";
+import { FilePlus } from "lucide-react";
 
 type CreateAttendanceFormDialogProps = {
 	onCreate: (detail: AttendanceForm) => void;
@@ -26,7 +27,10 @@ export function CreateAttendanceFormDialog(props: CreateAttendanceFormDialogProp
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button>Create New Attendance</Button>
+				<Button className="w-full flex gap-2" size="lg" variant="outline">
+					<FilePlus />
+					Create New Attendance
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="!w-96">
 				<DialogHeader>
