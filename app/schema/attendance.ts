@@ -19,5 +19,6 @@ export const attendanceSchema = z.object({
 	class: z.enum(universityClass),
 	studyProgram: z.enum(studyProgram),
 	feedback: z.string().default(""),
+	time: z.date(),
 });
 export type Attendance = z.infer<typeof attendanceSchema>;

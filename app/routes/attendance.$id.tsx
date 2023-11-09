@@ -1,14 +1,17 @@
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link, useParams } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
+import { useEventSource } from "remix-utils/sse/react";
+import { AttendanceCard } from "~/components/attendance/attendance-card";
 import { Button } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
+import { storeAttendances } from "~/services/attendance";
+import type { Attendance } from "~/schema/attendance";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms
@@ -16,8 +19,13 @@ const PROGRESS_UPDATE_DURATION = 100; // 100ms
 export const meta: MetaFunction = () => {
 	return [{ title: "Attendance | Workshop Riset Informatika" }];
 };
-
 export default function AttendancePage() {
+	const params = useParams();
+	const attendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
+	const parsedAttendances = useMemo<Attendance[]>(
+		() => (attendances === null ? [] : JSON.parse(attendances)),
+		[attendances]
+	);
 	const [randomUid, setRandomUid] = useState(nanoid());
 	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
 	const progressValue = (timeLeft / QR_UPDATE_DURATION) * 100;
@@ -41,12 +49,15 @@ export default function AttendancePage() {
 	}, [updateRandomUid]);
 
 	useEffect(() => {
-		console.log({ timeLeft });
-	}, [timeLeft]);
+		(async () => {
+			if (parsedAttendances.length <= 0) return;
+			await storeAttendances(params.id as string, parsedAttendances);
+		})();
+	}, [params.id, parsedAttendances]);
 
 	return (
-		<div className="flex flex-col items-center justify-center h-full">
-			<div className="flex gap-4">
+		<div className="flex flex-col items-center justify-center h-full gap-8">
+			<div className="flex gap-8">
 				<div className="flex flex-col gap-2">
 					<div className="w-[500px] h-[500px]">
 						<QRCode
@@ -66,14 +77,18 @@ export default function AttendancePage() {
 					<h1 className="text-2xl font-bold text-slate-800">Attendance</h1>
 					<p className="text-gray-500">Scan the QR code with your phone to mark your attendance.</p>
 					<Separator className="my-4" />
-					<ScrollArea className="w-[480px] h-[480px]">
-						<Card className="flex items-center justify-between p-4">
-							<div className="flex flex-col">
-								<span className="text-lg font-semibold text-slate-800">Manusia Bernapas</span>
-								<span className="text-sm text-slate-800">2I - Teknik Informatika</span>
-							</div>
-							<span className="text-lg">21:32</span>
-						</Card>
+					<ScrollArea className="w-[480px] h-[420px]">
+						<div className="flex flex-col gap-2 pr-4">
+							{parsedAttendances.map((attendance) => (
+								<AttendanceCard
+									key={attendance.id}
+									name={attendance.fullname}
+									class={attendance.class}
+									studyProgram={attendance.studyProgram}
+									time={attendance.time}
+								/>
+							))}
+						</div>
 					</ScrollArea>
 				</div>
 			</div>
