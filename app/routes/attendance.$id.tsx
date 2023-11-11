@@ -11,7 +11,6 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import { storeAttendances } from "~/services/attendance";
 import type { Attendance } from "~/schema/attendance";
-import type { RandomUid } from "./sse.random.$id";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms
@@ -27,12 +26,8 @@ export default function AttendancePage() {
 		() => (attendances === null ? [] : JSON.parse(attendances)),
 		[attendances]
 	);
-	const parsedRandomUid = useMemo<RandomUid | null>(
-		() => (randomUid === null ? null : JSON.parse(randomUid)),
-		[randomUid]
-	);
-	const [timeLeft, setTimeLeft] = useState((parsedRandomUid?.expiredAt ?? Date.now()) - Date.now());
-	const progressValue = (timeLeft / QR_UPDATE_DURATION) * 100;
+	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
+	const progressValue = useMemo(() => (timeLeft / QR_UPDATE_DURATION) * 100, [timeLeft]);
 	const qrTimeout = useRef<NodeJS.Timeout>();
 
 	const updateRandomUid = useCallback(() => {
@@ -41,10 +36,13 @@ export default function AttendancePage() {
 				setTimeLeft(QR_UPDATE_DURATION);
 				qrTimeout.current = updateRandomUid();
 			} else {
-				setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
+				if (randomUid !== null) {
+					setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
+					console.log({ timeLeft });
+				}
 			}
 		}, PROGRESS_UPDATE_DURATION);
-	}, [timeLeft]);
+	}, [randomUid, timeLeft]);
 
 	useEffect(() => {
 		updateRandomUid();
@@ -59,9 +57,9 @@ export default function AttendancePage() {
 	}, [params.id, parsedAttendances]);
 
 	useEffect(() => {
-		if (parsedRandomUid === null) return;
-		setTimeLeft((parsedRandomUid.expiredAt ?? Date.now()) - Date.now());
-	}, [parsedRandomUid]);
+		if (randomUid === null) return;
+		setTimeLeft(QR_UPDATE_DURATION);
+	}, [randomUid]);
 
 	return (
 		<div className="flex flex-col items-center justify-center pt-32 gap-8">
@@ -71,7 +69,7 @@ export default function AttendancePage() {
 						<QRCode
 							size={480}
 							style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-							value={parsedRandomUid?.randomUid}
+							value={randomUid ?? ""}
 							ecLevel="H"
 							logoImage="/wri-logo-small.png"
 							removeQrCodeBehindLogo
