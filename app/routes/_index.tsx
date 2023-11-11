@@ -1,8 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
 import { Link, useNavigate } from "@remix-run/react";
-import { QrCodeIcon } from "lucide-react";
-import { useLayoutEffect, useState } from "react";
-import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-dialog";
+import { ListChecksIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-form-dialog";
 import { FormCard } from "~/components/attendance/form-card";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -18,7 +18,7 @@ export default function Index() {
 	const [attendanceForms, setAttendanceForms] = useState<AttendanceForm[]>([]);
 	const navigate = useNavigate();
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		(async () => {
 			const storedForms = await getAllAttendanceForms();
 			setAttendanceForms(storedForms);
@@ -30,10 +30,10 @@ export default function Index() {
 			<div className="flex-1 h-full flex flex-col gap-8 items-end justify-center">
 				<img src="/wri-logo.png" alt="WRI Logo" className="w-72" />
 				<div className="flex flex-col gap-2 w-72">
-					<Link to="/scan" className="w-full">
+					<Link to="/submit" className="w-full">
 						<Button className="w-full flex gap-2" size="lg">
-							<QrCodeIcon />
-							Scan QR Code
+							<ListChecksIcon />
+							Submit Attendance
 						</Button>
 					</Link>
 					<CreateAttendanceFormDialog

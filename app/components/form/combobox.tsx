@@ -12,6 +12,8 @@ type ComboboxProps = {
 	defaultValue?: string;
 	emptyText: string;
 	onChange: (items: string) => void;
+	side?: "right" | "top" | "bottom" | "left";
+	valueTextTransform?: "uppercase" | "lowercase" | "capitalize" | "normal-case";
 };
 
 export function Combobox(props: ComboboxProps) {
@@ -25,13 +27,13 @@ export function Combobox(props: ComboboxProps) {
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="justify-between w-full capitalize font-normal"
+					className="justify-between w-full font-normal"
 				>
-					{value ? value : props.placeholder}
+					{value ? <span className={props.valueTextTransform}>{value}</span> : props.placeholder}
 					<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="p-0" side="right">
+			<PopoverContent className="p-0" side={props.side ?? "right"}>
 				<Command>
 					<CommandInput placeholder={props.placeholder} />
 					<CommandEmpty>{props.emptyText}</CommandEmpty>

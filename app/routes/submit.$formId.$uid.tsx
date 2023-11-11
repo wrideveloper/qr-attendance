@@ -1,6 +1,6 @@
 import { type LoaderFunctionArgs, json, type ActionFunctionArgs, redirect } from "@remix-run/node";
 import { attendanceSchema } from "~/schema/attendance";
-import { ATTENDANCE_GLOBAL_STORE, getAttendance, submitAttendance } from "~/services/attendance.server";
+import { ATTENDANCE_GLOBAL_STORE, getAttendance, storeAttendance } from "~/services/attendance.server";
 import { NANOID_GLOBAL_STORE } from "~/services/nanoid";
 
 export function loader({ params, request }: LoaderFunctionArgs) {
@@ -19,10 +19,12 @@ export default function SubmitPage() {
 }
 
 export async function action({ params, request }: ActionFunctionArgs) {
-	const id = params.id;
+	const formId = params.formId;
 	const uid = params.uid;
 
-	if (id === undefined || uid === undefined) {
+	console.log({ formId, uid });
+
+	if (formId === undefined || uid === undefined) {
 		return json({ error: "Bad Request" }, { status: 400 });
 	}
 
@@ -33,23 +35,26 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		return;
 	}
 
-	if (!ATTENDANCE_GLOBAL_STORE.has(id)) {
+	if (!ATTENDANCE_GLOBAL_STORE.has(formId)) {
+		console.log("Attendance Form not found")
 		return json({ error: "Not found" }, { status: 404 });
 	}
 
-	const currentValidNanoId = NANOID_GLOBAL_STORE.get(id);
+	const currentValidNanoId = NANOID_GLOBAL_STORE.get(formId);
 	if (currentValidNanoId !== uid) {
+		console.log("UID not valid")
 		return json({ error: "Not found" }, { status: 404 });
 	}
 
-	const body = await request.json();
+	const body = await request.formData();
 	const attendance = attendanceSchema.safeParse(body);
 
 	if (!attendance.success) {
+		console.log("Attendance not valid")
 		return json({ error: "Bad Request" }, { status: 400 });
 	}
 
-	submitAttendance(attendance.data);
+	storeAttendance(attendance.data);
 
-	return redirect(`/submit/${id}/${uid}?attendanceId=${attendance.data.id}`);
+	return redirect(`/submit/${formId}/${uid}?attendanceId=${attendance.data.id}`);
 }
