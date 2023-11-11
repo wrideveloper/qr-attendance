@@ -38,14 +38,13 @@ export default function AttendancePage() {
 			} else {
 				if (randomUid !== null) {
 					setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
-					console.log({ timeLeft });
 				}
 			}
 		}, PROGRESS_UPDATE_DURATION);
 	}, [randomUid, timeLeft]);
 
 	useEffect(() => {
-		updateRandomUid();
+		qrTimeout.current = updateRandomUid();
 		return () => clearTimeout(qrTimeout.current);
 	}, [updateRandomUid]);
 
