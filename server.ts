@@ -10,7 +10,7 @@ export const onRequest = createPagesFunctionHandler({
 	build,
 	getLoadContext: (context) => {
 		return {
-			env: context.env,
+			env: context.env
 		};
 	},
 	mode: build.mode,

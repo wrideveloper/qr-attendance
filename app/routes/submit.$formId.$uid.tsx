@@ -1,60 +1,42 @@
-import { type LoaderFunctionArgs, json, type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
+import { json, type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { attendanceSchema } from "~/schema/attendance";
-import { ATTENDANCE_GLOBAL_STORE, getAttendance, storeAttendance } from "~/services/attendance.server";
+import { ATTENDANCE_QUEUE } from "~/services/attendance.server";
 import { NANOID_GLOBAL_STORE } from "~/services/nanoid";
-
-export function loader({ params, request }: LoaderFunctionArgs) {
-	const query = new URLSearchParams(request.url.split("?")[1]);
-	const isAttendanceValid = getAttendance(params.id as string, query.get("attendanceId") as string);
-	return json({ isAttendanceValid });
-}
-
-export default function SubmitPage() {
-	return (
-		<div>
-			<h1>Submit</h1>
-			<p>This is the submit page</p>
-		</div>
-	);
-}
 
 export async function action({ params, request }: ActionFunctionArgs) {
 	const formId = params.formId;
 	const uid = params.uid;
 
-	console.log({ formId, uid });
-
 	if (formId === undefined || uid === undefined) {
+		console.log("Form ID or UID can't be empty");
 		return json({ error: "Bad Request" }, { status: 400 });
-	}
-
-	// If the attendanceId is present, then we've checked this already
-	const query = new URLSearchParams(request.url.split("?")[1]);
-	const attendanceId = query.get("attendanceId");
-	if (attendanceId !== null) {
-		return;
-	}
-
-	if (!ATTENDANCE_GLOBAL_STORE.has(formId)) {
-		console.log("Attendance Form not found")
-		return json({ error: "Not found" }, { status: 404 });
 	}
 
 	const currentValidNanoId = NANOID_GLOBAL_STORE.get(formId);
 	if (currentValidNanoId !== uid) {
-		console.log("UID not valid")
-		return json({ error: "Not found" }, { status: 404 });
+		console.log("Invalid UID");
+		return json({ error: "Invalid UID" }, { status: 400 });
 	}
 
-	const body = await request.formData();
-	const attendance = attendanceSchema.safeParse(body);
+	const bodyForm = (await request.formData()) as FormData;
+	const body = Object.fromEntries(bodyForm.entries());
+	const attendance = attendanceSchema.safeParse({
+		...body,
+		time: new Date(body.time as string),
+	});
 
 	if (!attendance.success) {
-		console.log("Attendance not valid")
-		return json({ error: "Bad Request" }, { status: 400 });
+		console.log("Invalid Attendance", attendance.error);
+		return json({ error: "Invalid Attendance" }, { status: 400 });
 	}
 
-	storeAttendance(attendance.data);
+	let formAttendances = ATTENDANCE_QUEUE.get(formId);
+	if (formAttendances === undefined) {
+		ATTENDANCE_QUEUE.set(formId, []);
+		formAttendances = [];
+	}
+	formAttendances = [...formAttendances, attendance.data];
+	ATTENDANCE_QUEUE.set(formId, formAttendances);
 
-	return redirect(`/submit/${formId}/${uid}?attendanceId=${attendance.data.id}`);
+	return redirect("/");
 }

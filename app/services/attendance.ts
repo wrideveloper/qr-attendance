@@ -1,8 +1,8 @@
 import type { Attendance, AttendanceForm } from "~/schema/attendance";
-import { getMany, keys, set } from "idb-keyval";
+import { get, getMany, keys, set } from "idb-keyval";
 
-export function createAttendanceForm(detail: AttendanceForm) {
-	return set(`attendance-${detail.id}`, detail);
+export function createAttendanceForm(form: AttendanceForm) {
+	return set(`attendance-form-${form.id}`, form);
 }
 
 export async function getAllAttendanceForms() {
@@ -12,10 +12,10 @@ export async function getAllAttendanceForms() {
 	return attendanceForms.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
-export async function getAttendance(id: string) {
-	return await getMany<AttendanceForm>([`attendance-${id}`]);
+export function getAttendances(formId: string) {
+	return get(`attendance-${formId}`);
 }
 
-export function storeAttendances(id: string, attendances: Attendance[]) {
-	return set(`attendance-${id}`, attendances);
+export function storeAttendances(formId: string, attendances: Attendance[]) {
+	return set(`attendance-${formId}`, attendances);
 }

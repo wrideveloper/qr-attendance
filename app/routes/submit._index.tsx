@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useSubmit } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -12,6 +13,10 @@ import { Input } from "~/components/ui/input";
 import { studyProgram as studyPrograms, universityClass as universityClasses } from "~/data/class";
 import { capitalise } from "~/lib/utils";
 import { type Attendance, attendanceSchema } from "~/schema/attendance";
+
+export const meta: MetaFunction = () => {
+	return [{ title: "Submit Attendance | Workshop Riset Informatik" }];
+};
 
 export default function ScanPage() {
 	const form = useForm<Attendance>({
@@ -35,6 +40,7 @@ export default function ScanPage() {
 		submit(formData, {
 			method: "POST",
 			action: `/submit/${formId}/${randomUid}`,
+			navigate: true,
 		});
 	}
 

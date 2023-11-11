@@ -44,6 +44,7 @@ export function DynamicInput(props: DynamicInputProps) {
 						emptyText="No Mentor Found"
 						onChange={(value) => onChange(capitalise(value), index)}
 						defaultValue={mentor}
+						valueTextTransform="capitalize"
 					/>
 					<Button
 						variant="destructive"

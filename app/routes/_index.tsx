@@ -8,7 +8,7 @@ import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { AttendanceForm } from "~/schema/attendance";
-import { createAttendanceForm, getAllAttendanceForms } from "~/services/attendance";
+import { getAllAttendanceForms, createAttendanceForm } from "~/services/attendance";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "WRI QR Attendance" }, { name: "description", content: "Welcome to Remix!" }];
@@ -25,6 +25,15 @@ export default function Index() {
 		})();
 	}, []);
 
+	function handleCreateAttendanceForm(detail: AttendanceForm) {
+		createAttendanceForm({
+			...detail,
+			mentors: detail.mentors.filter((mentor) => mentor.length > 0),
+			date: new Date(), // override with current submission date
+		});
+		navigate(`/attendance/${detail.id}`);
+	}
+
 	return (
 		<div className="flex flex-col md:flex-row gap-28 items-center h-full max-w-screen-xl mx-auto px-8">
 			<div className="flex-1 h-full flex flex-col gap-8 items-center justify-center">
@@ -36,15 +45,7 @@ export default function Index() {
 							Submit Attendance
 						</Button>
 					</Link>
-					<CreateAttendanceFormDialog
-						onCreate={(detail) => {
-							createAttendanceForm({
-								...detail,
-								mentors: detail.mentors.filter((mentor) => mentor !== ""),
-							});
-							navigate(`/attendance/${detail.id}`);
-						}}
-					/>
+					<CreateAttendanceFormDialog onCreate={handleCreateAttendanceForm} />
 				</div>
 			</div>
 			{attendanceForms.length > 0 && (

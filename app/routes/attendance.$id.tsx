@@ -9,8 +9,8 @@ import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
-import { storeAttendances } from "~/services/attendance";
 import type { Attendance } from "~/schema/attendance";
+import { getAttendances, storeAttendances } from "~/services/attendance";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms
@@ -20,12 +20,12 @@ export const meta: MetaFunction = () => {
 };
 export default function AttendancePage() {
 	const params = useParams();
+
 	const attendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
 	const randomUid = useEventSource(`/sse/random/${params.id}`, { event: params.id });
-	const parsedAttendances = useMemo<Attendance[]>(
-		() => (attendances === null ? [] : JSON.parse(attendances)),
-		[attendances]
-	);
+	const parsedAttendances: Attendance[] = attendances === null ? [] : JSON.parse(attendances);
+	const [storedAttendances, setStoredAttendances] = useState<Attendance[]>([]);
+
 	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
 	const progressValue = useMemo(() => (timeLeft / QR_UPDATE_DURATION) * 100, [timeLeft]);
 	const qrTimeout = useRef<NodeJS.Timeout>();
@@ -52,13 +52,22 @@ export default function AttendancePage() {
 		(async () => {
 			if (parsedAttendances.length <= 0) return;
 			await storeAttendances(params.id as string, parsedAttendances);
+			setStoredAttendances(parsedAttendances);
 		})();
-	}, [params.id, parsedAttendances]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [parsedAttendances]);
 
 	useEffect(() => {
 		if (randomUid === null) return;
 		setTimeLeft(QR_UPDATE_DURATION);
 	}, [randomUid]);
+
+	useEffect(() => {
+		(async () => {
+			const attendances = await getAttendances(params.id as string);
+			setStoredAttendances(attendances);
+		})();
+	}, [params.id]);
 
 	return (
 		<div className="flex flex-col items-center justify-center pt-32 gap-8">
@@ -85,13 +94,13 @@ export default function AttendancePage() {
 					<Separator className="my-4" />
 					<ScrollArea className="w-[480px] h-[420px]">
 						<div className="flex flex-col gap-2 pr-4">
-							{parsedAttendances.map((attendance) => (
+							{storedAttendances.map((attendance) => (
 								<AttendanceCard
 									key={attendance.id}
 									name={attendance.fullname}
 									class={attendance.class}
 									studyProgram={attendance.studyProgram}
-									time={attendance.time}
+									time={new Date(attendance.time)}
 								/>
 							))}
 						</div>

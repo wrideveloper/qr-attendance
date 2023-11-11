@@ -19,8 +19,8 @@ export function ScanQrDialog(props: ScanQrDialogProps) {
 					disabled={props.isDisabled}
 					type="button"
 				>
-					<ArrowRight />
 					Continue
+					<ArrowRight className="w-4 h-4" />
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="!w-96">

@@ -11,3 +11,13 @@ export function capitalise(text: string) {
 		.map((word) => word[0].toUpperCase() + word.slice(1))
 		.join(" ");
 }
+
+export function createFormData(data: Record<string, any>) {
+	const formData = new FormData();
+
+	Object.keys(data).forEach((key) => {
+		formData.append(key, data[key]);
+	});
+
+	return formData;
+}
