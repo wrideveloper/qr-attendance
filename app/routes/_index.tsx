@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useNavigate } from "@remix-run/react";
 import { ListChecksIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -27,7 +27,7 @@ export default function Index() {
 
 	return (
 		<div className="flex flex-col md:flex-row gap-28 items-center h-full max-w-screen-xl mx-auto px-8">
-			<div className="flex-1 h-full flex flex-col gap-8 items-end justify-center">
+			<div className="flex-1 h-full flex flex-col gap-8 items-center justify-center">
 				<img src="/wri-logo.png" alt="WRI Logo" className="w-72" />
 				<div className="flex flex-col gap-2 w-72">
 					<Link to="/submit" className="w-full">

@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
 import { getAllAttendances } from "~/services/attendance.server";

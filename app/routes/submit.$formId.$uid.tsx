@@ -1,4 +1,4 @@
-import { type LoaderFunctionArgs, json, type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { type LoaderFunctionArgs, json, type ActionFunctionArgs, redirect } from "@remix-run/cloudflare";
 import { attendanceSchema } from "~/schema/attendance";
 import { ATTENDANCE_GLOBAL_STORE, getAttendance, storeAttendance } from "~/services/attendance.server";
 import { NANOID_GLOBAL_STORE } from "~/services/nanoid";
