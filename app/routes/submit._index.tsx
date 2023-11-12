@@ -32,7 +32,7 @@ export default function ScanPage() {
 	async function submitAttendance(qrValue: string) {
 		const [formId, randomUid] = qrValue.split("::");
 		const formData = new FormData();
-		formData.set("id", formId);
+		formData.set("id", nanoid());
 		formData.set("fullname", form.getValues("fullname"));
 		formData.set("class", form.getValues("class"));
 		formData.set("studyProgram", form.getValues("studyProgram"));

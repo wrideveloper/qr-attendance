@@ -21,6 +21,7 @@ export function AttendanceCard(props: AttendanceCardProps) {
 					hour: "2-digit",
 					minute: "2-digit",
 					second: "2-digit",
+					timeStyle: "full",
 				})}
 			</span>
 		</Card>
