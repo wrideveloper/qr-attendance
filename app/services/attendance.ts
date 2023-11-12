@@ -12,8 +12,9 @@ export async function getAllAttendanceForms() {
 	return attendanceForms.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
 
-export function getAttendances(formId: string) {
-	return get(`attendance-${formId}`);
+export async function getAttendances(formId: string): Promise<Attendance[]> {
+	const attendances = await get(`attendance-${formId}`);
+	return attendances ?? [];
 }
 
 export function storeAttendances(formId: string, attendances: Attendance[]) {
