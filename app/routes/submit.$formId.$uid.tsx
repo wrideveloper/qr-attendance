@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { ATTENDANCE_QUEUE } from "~/services/attendance.server";
-import { NANOID_GLOBAL_STORE } from "~/services/nanoid";
+import { NANOID_GLOBAL_STORE } from "~/services/nanoid.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();

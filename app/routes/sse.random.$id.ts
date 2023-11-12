@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { eventStream } from "remix-utils/sse/server";
 import { interval } from "remix-utils/timers";
-import { generateRandomNanoId } from "~/services/nanoid";
+import { generateRandomNanoId } from "~/services/nanoid.server";
 
 const REFRESH_INTERVAL = 10_000;
 
