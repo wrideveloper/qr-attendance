@@ -1,38 +1,9 @@
-# Welcome to Remix!
+# QR Attendance
 
-- [Remix Docs](https://remix.run/docs)
+This repository contains the source code for the QR Attendance project. The project is a web application that allows WRI members to submit their attendance by scanning a QR code. The application is built using Remix and Tailwind.
 
-## Development
+THIS IS A HEAVY WORK IN PROGRESS. There are bugs here and there, feature incompleteness, etc. PR's are welcome.
 
-From your terminal:
+## Getting Started
 
-```sh
-npm run dev
-```
-
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `remix build`
-
-- `build/`
-- `public/build/`
+TBD
