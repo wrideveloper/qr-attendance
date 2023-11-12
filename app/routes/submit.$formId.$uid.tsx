@@ -44,7 +44,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
 	const currentValidNanoId = NANOID_GLOBAL_STORE.get(formId);
 	if (currentValidNanoId !== uid) {
-		console.log("Invalid UID");
+		console.log(`Invalid UID, expected: ${currentValidNanoId}, actual: ${uid}`);
 		return json({ success: false, message: "Invalid UID" }, { status: 400 });
 	}
 
