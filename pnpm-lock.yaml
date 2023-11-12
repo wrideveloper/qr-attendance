@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@fontsource/rubik':
+    specifier: ^5.0.17
+    version: 5.0.17
   '@hookform/resolvers':
     specifier: ^3.3.2
     version: 3.3.2(react-hook-form@7.48.2)
@@ -1294,6 +1297,10 @@ packages:
 
   /@floating-ui/utils@0.1.6:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
+    dev: false
+
+  /@fontsource/rubik@5.0.17:
+    resolution: {integrity: sha512-42yGtxnj9UFY+A6nWbSWtcPYX3PXPYYQi1xKMzLLjis4wRhZ9VZANfWMbRToGPW+lRZvuSesCJ4uB+J2EDFvzQ==}
     dev: false
 
   /@hookform/resolvers@3.3.2(react-hook-form@7.48.2):
