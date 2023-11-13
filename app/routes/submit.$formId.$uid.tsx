@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { ATTENDANCE_QUEUE } from "~/services/attendance.server";
-import { NANOID_GLOBAL_STORE } from "~/services/nanoid.server";
+import { getCurrentValidUid } from "~/services/nanoid.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
@@ -33,7 +33,7 @@ export default function SubmitResultPage() {
 	);
 }
 
-export async function action({ params, request }: ActionFunctionArgs) {
+export async function action({ params, request, context }: ActionFunctionArgs) {
 	const formId = params.formId;
 	const uid = params.uid;
 
@@ -42,7 +42,11 @@ export async function action({ params, request }: ActionFunctionArgs) {
 		return json({ success: false, message: "Bad Request" }, { status: 400 });
 	}
 
-	const currentValidNanoId = NANOID_GLOBAL_STORE.get(formId);
+	const currentValidNanoId = await getCurrentValidUid(context.NANOID_STORE as KVNamespace, formId);
+	if (currentValidNanoId === null) {
+		console.log(`Form ID ${formId} doesn't exist`);
+		return json({ success: false, message: "Form ID doesn't exist" }, { status: 400 });
+	}
 	if (currentValidNanoId !== uid) {
 		console.log(`Invalid UID, expected: ${currentValidNanoId}, actual: ${uid}`);
 		return json({ success: false, message: "Invalid UID" }, { status: 400 });

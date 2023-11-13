@@ -10,7 +10,8 @@ export const onRequest = createPagesFunctionHandler({
 	build,
 	getLoadContext: (context) => {
 		return {
-			env: context.env
+			env: context.env,
+			NANOID_STORE: context.env.NANOID_STORE,
 		};
 	},
 	mode: build.mode,
