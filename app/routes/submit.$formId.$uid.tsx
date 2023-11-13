@@ -19,12 +19,17 @@ export default function SubmitResultPage() {
 					) : (
 						<AlertCircleIcon className="w-20 h-20 text-red-500" />
 					)}
-					<p className={cn("text-3xl font-medium", actionData.success ? "text-green-500" : "text-red-500")}>
+					<p
+						className={cn(
+							"text-3xl font-medium text-center",
+							actionData.success ? "text-green-500" : "text-red-500"
+						)}
+					>
 						{actionData.message}
 					</p>
 				</>
 			) : (
-				<span>You shouldn't be here</span>
+				<span className="text-center">You shouldn't be here</span>
 			)}
 			<Link to="/">
 				<Button>Back to Home</Button>
