@@ -77,5 +77,6 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 	formAttendances = [...formAttendances, attendance.data];
 	ATTENDANCE_QUEUE.set(formId, formAttendances);
 
+	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${uid}`);
 	return json({ success: true, message: "Successfully submitted an attendance" });
 }
