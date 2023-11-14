@@ -6,7 +6,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev --manual -c \"npm run start\"",
-    "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public --kv NANOID_STORE",
+    "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public --kv NANOID_STORE --kv ATTENDANCE_QUEUE",
     "typecheck": "tsc",
     "format": "prettier app --write"
   },

@@ -4,7 +4,7 @@ import { AlertCircleIcon, CheckCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
-import { ATTENDANCE_QUEUE } from "~/services/attendance.server";
+import { pushAttendance } from "~/services/attendance.server";
 import { getCurrentValidUid } from "~/services/nanoid.server";
 
 export default function SubmitResultPage() {
@@ -69,13 +69,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 		return json({ success: false, message: "Invalid Attendance" }, { status: 400 });
 	}
 
-	let formAttendances = ATTENDANCE_QUEUE.get(formId);
-	if (formAttendances === undefined) {
-		ATTENDANCE_QUEUE.set(formId, []);
-		formAttendances = [];
-	}
-	formAttendances = [...formAttendances, attendance.data];
-	ATTENDANCE_QUEUE.set(formId, formAttendances);
+	await pushAttendance(context.ATTENDANCE_STORE as KVNamespace, formId, attendance.data);
 
 	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${uid}`);
 	return json({ success: true, message: "Successfully submitted an attendance" });
