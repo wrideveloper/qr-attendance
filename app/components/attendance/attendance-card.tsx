@@ -17,11 +17,10 @@ export function AttendanceCard(props: AttendanceCardProps) {
 				</span>
 			</div>
 			<span className="text-sm font-semibold text-slate-700">
-				{props.time.toLocaleTimeString("id-ID", {
+				{new Date(props.time).toLocaleTimeString("id-ID", {
 					hour: "2-digit",
 					minute: "2-digit",
 					second: "2-digit",
-					timeStyle: "full",
 				})}
 			</span>
 		</Card>

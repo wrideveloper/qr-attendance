@@ -1,5 +1,5 @@
 import { json, type ActionFunctionArgs } from "@remix-run/cloudflare";
-import { Link, useActionData } from "@remix-run/react";
+import { Link, useActionData, useNavigate } from "@remix-run/react";
 import { AlertCircleIcon, CheckCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
@@ -9,6 +9,7 @@ import { getCurrentValidUid } from "~/services/nanoid.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
+	const navigate = useNavigate();
 
 	return (
 		<div className="flex flex-col items-center justify-center w-full h-full space-y-4">
@@ -30,6 +31,11 @@ export default function SubmitResultPage() {
 				</>
 			) : (
 				<span className="text-center">You shouldn't be here</span>
+			)}
+			{actionData?.message === "Invalid UID" && (
+				<Button variant="outline" onClick={() => navigate(-1)}>
+					Retry
+				</Button>
 			)}
 			<Link to="/">
 				<Button>Back to Home</Button>
@@ -69,7 +75,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 		return json({ success: false, message: "Invalid Attendance" }, { status: 400 });
 	}
 
-	await pushAttendance(context.ATTENDANCE_STORE as KVNamespace, formId, attendance.data);
+	await pushAttendance(context.ATTENDANCE_QUEUE as KVNamespace, formId, attendance.data);
 
 	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${uid}`);
 	return json({ success: true, message: "Successfully submitted an attendance" });

@@ -8,9 +8,9 @@ export async function getAllAttendances(kv: KVNamespace, formId: string): Promis
 export async function pushAttendance(kv: KVNamespace, formId: string, attendance: Attendance) {
 	let formAttendances: Attendance[] | null = await kv.get(formId, { type: "json" });
 	if (formAttendances === null) {
-		kv.put(formId, JSON.stringify([]));
+		await kv.put(formId, JSON.stringify([]));
 		formAttendances = [];
 	}
 	formAttendances = [...formAttendances, attendance];
-	kv.put(formId, JSON.stringify(formAttendances));
+	await kv.put(formId, JSON.stringify(formAttendances));
 }
