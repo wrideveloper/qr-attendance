@@ -56,9 +56,7 @@ export default function Index() {
 					<ScrollArea className="h-[500px]">
 						<div className="flex flex-col gap-4 pr-4">
 							{attendanceForms.map((form) => (
-								<Link key={form.id} to={`/attendance/${form.id}`} className="w-full">
-									<FormCard {...form} />
-								</Link>
+								<FormCard key={form.id} {...form} />
 							))}
 						</div>
 					</ScrollArea>

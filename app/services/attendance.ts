@@ -1,8 +1,12 @@
 import type { Attendance, AttendanceForm } from "~/schema/attendance";
-import { get, getMany, keys, set } from "idb-keyval";
+import { del, get, getMany, keys, set } from "idb-keyval";
 
 export function createAttendanceForm(form: AttendanceForm) {
 	return set(`attendance-form-${form.id}`, form);
+}
+
+export function removeAttendanceForm(formId: string) {
+	return del(`attendance-form-${formId}`);
 }
 
 export async function getAllAttendanceForms() {
