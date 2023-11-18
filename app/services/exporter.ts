@@ -1,8 +1,7 @@
 import Papa from "papaparse";
-import { getAttendances } from "./attendance";
+import type { Attendance } from "~/schema/attendance";
 
-export async function exportFormResultToCsv(formId: string) {
-	const formAttendances = await getAttendances(formId);
-	const csv = Papa.unparse(formAttendances);
+export async function exportFormResultToCsv(attendances: Attendance[]) {
+	const csv = Papa.unparse(attendances);
 	return csv;
 }

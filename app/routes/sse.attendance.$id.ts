@@ -14,7 +14,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
 					params.id as string
 				);
 				const uniqueAttendees = attendances.reduce((acc, curr) => {
-					if (acc.find((a) => a.id === curr.id)) return acc;
+					if (acc.find((a) => a.id === curr.id || a.fullname === curr.fullname)) return acc;
 					return acc.concat(curr);
 				}, [] as Attendance[]);
 				send({ event: params.id, data: JSON.stringify(uniqueAttendees) });

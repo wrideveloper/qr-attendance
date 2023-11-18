@@ -3,8 +3,10 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { exportFormResultToCsv } from "~/services/exporter";
 import { downloadStringAsFile } from "~/services/download";
-import { removeAttendanceForm } from "~/services/attendance";
 import { Link } from "@remix-run/react";
+import { useAtom } from "jotai";
+import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance";
+import type { AttendanceForm } from "~/schema/attendance";
 
 type FormCardProps = {
 	id: string;
@@ -15,9 +17,12 @@ type FormCardProps = {
 };
 
 export function FormCard(props: FormCardProps) {
+	const [, setAttendanceForms] = useAtom(attendanceFormAtom);
+	const [attendances, setAttendances] = useAtom(attendanceAtom);
+
 	async function handleExport() {
 		console.log("Exporting to CSV");
-		const csv = await exportFormResultToCsv(props.id);
+		const csv = await exportFormResultToCsv(attendances[props.id]);
 		downloadStringAsFile(
 			csv,
 			`exported-${props.id}-${props.date.toLocaleDateString("id-ID", {
@@ -31,7 +36,16 @@ export function FormCard(props: FormCardProps) {
 
 	async function handleRemove() {
 		console.log("Removing");
-		await removeAttendanceForm(props.id);
+		setAttendanceForms((forms: Record<string, AttendanceForm>) => {
+			const newForms = { ...forms };
+			delete newForms[props.id];
+			return newForms;
+		});
+		setAttendances((prev: Record<string, AttendanceForm>) => {
+			const newAttendances = { ...prev };
+			delete newAttendances[props.id];
+			return newAttendances;
+		});
 	}
 
 	return (
@@ -51,13 +65,13 @@ export function FormCard(props: FormCardProps) {
 					</div>
 					<div className="flex flex-col items-end">
 						<span className="text-sm text-slate-600">
-							{props.date.toLocaleDateString("id-ID", {
+							{new Date(props.date).toLocaleDateString("id-ID", {
 								weekday: "long",
 							})}
 							,
 						</span>
 						<span className="text-sm text-slate-600">
-							{props.date.toLocaleDateString("id-ID", {
+							{new Date(props.date).toLocaleDateString("id-ID", {
 								day: "numeric",
 								month: "long",
 								year: "numeric",

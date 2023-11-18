@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useParams } from "@remix-run/react";
+import { useAtom } from "jotai";
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
@@ -10,7 +11,7 @@ import { Progress } from "~/components/ui/progress";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { Attendance } from "~/schema/attendance";
-import { getAttendances, storeAttendances } from "~/services/attendance";
+import { attendanceAtom } from "~/stores/attendance";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms
@@ -21,10 +22,10 @@ export const meta: MetaFunction = () => {
 export default function AttendancePage() {
 	const params = useParams();
 
-	const attendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
+	const serverAttendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
 	const randomUid = useEventSource(`/sse/random/${params.id}`, { event: params.id });
-	const parsedAttendances: Attendance[] = attendances === null ? [] : JSON.parse(attendances);
-	const [storedAttendances, setStoredAttendances] = useState<Attendance[]>([]);
+	const parsedAttendances: Attendance[] = serverAttendances === null ? [] : JSON.parse(serverAttendances);
+	const [attendances, setAttendances] = useAtom(attendanceAtom);
 
 	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
 	const progressValue = useMemo(() => (timeLeft / QR_UPDATE_DURATION) * 100, [timeLeft]);
@@ -51,8 +52,10 @@ export default function AttendancePage() {
 	useEffect(() => {
 		(async () => {
 			if (parsedAttendances.length <= 0) return;
-			await storeAttendances(params.id as string, parsedAttendances);
-			setStoredAttendances(parsedAttendances);
+			setAttendances((prev: Record<string, Attendance[]>) => ({
+				...prev,
+				[params.id as string]: parsedAttendances,
+			}));
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [parsedAttendances]);
@@ -61,13 +64,6 @@ export default function AttendancePage() {
 		if (randomUid === null) return;
 		setTimeLeft(QR_UPDATE_DURATION);
 	}, [randomUid]);
-
-	useEffect(() => {
-		(async () => {
-			const attendances = await getAttendances(params.id as string);
-			setStoredAttendances(attendances);
-		})();
-	}, [params.id]);
 
 	return (
 		<div className="flex flex-col items-center justify-center pt-32 gap-8">
@@ -94,7 +90,7 @@ export default function AttendancePage() {
 					<Separator className="my-4" />
 					<ScrollArea className="w-[480px] h-[420px]">
 						<div className="flex flex-col gap-2 pr-4">
-							{storedAttendances.map((attendance) => (
+							{(attendances[params.id as string] ?? []).map((attendance) => (
 								<AttendanceCard
 									key={attendance.id}
 									name={attendance.fullname}

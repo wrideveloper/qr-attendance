@@ -1,36 +1,34 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useNavigate } from "@remix-run/react";
+import { useAtom } from "jotai";
 import { ListChecksIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-form-dialog";
 import { FormCard } from "~/components/attendance/form-card";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { AttendanceForm } from "~/schema/attendance";
-import { getAllAttendanceForms, createAttendanceForm } from "~/services/attendance";
+import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "WRI QR Attendance" }, { name: "description", content: "Welcome to Remix!" }];
 };
 
 export default function Index() {
-	const [attendanceForms, setAttendanceForms] = useState<AttendanceForm[]>([]);
+	const [attendanceForms, setAttendanceForms] = useAtom(attendanceFormAtom);
+	const [, setAttendances] = useAtom(attendanceAtom);
+	const attendanceFormsValues = Object.values(attendanceForms);
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		(async () => {
-			const storedForms = await getAllAttendanceForms();
-			setAttendanceForms(storedForms);
-		})();
-	}, []);
-
 	function handleCreateAttendanceForm(detail: AttendanceForm) {
-		createAttendanceForm({
-			...detail,
-			mentors: detail.mentors.filter((mentor) => mentor.length > 0),
-			date: new Date(), // override with current submission date
-		});
+		setAttendanceForms((forms: Record<string, AttendanceForm>) => ({
+			...forms,
+			[detail.id]: detail,
+		}));
+		setAttendances((prev: Record<string, AttendanceForm>) => ({
+			...prev,
+			[detail.id]: [],
+		}));
 		navigate(`/attendance/${detail.id}`);
 	}
 
@@ -48,14 +46,14 @@ export default function Index() {
 					<CreateAttendanceFormDialog onCreate={handleCreateAttendanceForm} />
 				</div>
 			</div>
-			{attendanceForms.length > 0 && (
+			{attendanceFormsValues.length > 0 && (
 				<div className="flex-1">
 					<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
 					<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
 					<Separator className="my-4" />
 					<ScrollArea className="h-[500px]">
 						<div className="flex flex-col gap-4 pr-4">
-							{attendanceForms.map((form) => (
+							{attendanceFormsValues.map((form) => (
 								<FormCard key={form.id} {...form} />
 							))}
 						</div>
