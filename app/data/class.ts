@@ -12,6 +12,6 @@ export const studyProgram = [
 	"Sistem Kelistrikan",
 	"Teknik Otomotif Elektronik",
 	"Teknik Telekomunikasi",
-	"Bahasa Inggris untuk Bisnis Komunikasi dan Profesional",
+	"Bahasa Inggris Untuk Bisnis Komunikasi",
 	"Teknik Jaringan Telekomunikasi Digital",
 ] as const;

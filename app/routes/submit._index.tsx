@@ -46,7 +46,7 @@ export default function ScanPage() {
 
 	return (
 		<div className="h-full flex flex-col gap-4 items-center justify-center">
-			<Card className="p-4">
+			<Card className="p-4 md:w-[420px] max:w-[640px]">
 				<Form {...form}>
 					<form className="space-y-6 pb-4">
 						<FormField
