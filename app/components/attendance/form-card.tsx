@@ -25,7 +25,7 @@ export function FormCard(props: FormCardProps) {
 		const csv = await exportFormResultToCsv(attendances[props.id]);
 		downloadStringAsFile(
 			csv,
-			`exported-${props.id}-${props.date.toLocaleDateString("id-ID", {
+			`exported-${props.id}-${new Date(props.date).toLocaleDateString("id-ID", {
 				day: "numeric",
 				month: "numeric",
 				year: "numeric",
