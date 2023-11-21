@@ -6,6 +6,7 @@ import { QrScanner } from "@yudiel/react-qr-scanner";
 
 type ScanQrDialogProps = {
 	isDisabled?: boolean;
+	isSubmitting?: boolean;
 	onScanned: (qrValue: string) => void;
 };
 
@@ -25,7 +26,7 @@ export function ScanQrDialog(props: ScanQrDialogProps) {
 			</DialogTrigger>
 			<DialogContent className="!w-96">
 				<DialogHeader>
-					<DialogTitle>Attendance Details</DialogTitle>
+					<DialogTitle>Scan The QR Code</DialogTitle>
 				</DialogHeader>
 				<Separator />
 				<div className="w-80 h-80 rounded-md overflow-hidden mx-auto">

@@ -3,6 +3,7 @@ import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useSubmit } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ScanQrDialog } from "~/components/attendance/scan-qr-dialog";
 import { Combobox } from "~/components/form/combobox";
@@ -28,8 +29,10 @@ export default function ScanPage() {
 		resolver: zodResolver(attendanceSchema),
 	});
 	const submit = useSubmit();
+	const [isSubmitting, setSubmitting] = useState(false);
 
 	async function submitAttendance(qrValue: string) {
+		setSubmitting(true);
 		const [formId, randomUid] = qrValue.split("::");
 		const formData = new FormData();
 		formData.set("id", nanoid());
@@ -102,7 +105,11 @@ export default function ScanPage() {
 								</FormItem>
 							)}
 						/>
-						<ScanQrDialog isDisabled={!form.formState.isValid} onScanned={submitAttendance} />
+						<ScanQrDialog
+							isDisabled={!form.formState.isValid}
+							onScanned={submitAttendance}
+							isSubmitting={isSubmitting}
+						/>
 					</form>
 				</Form>
 				<Link to="/">
