@@ -105,7 +105,7 @@ export default function AttendancePage() {
 					</ScrollArea>
 				</div>
 			</div>
-			<Button className="flex gap-2 w-full" onClick={() => navigate(-1)}>
+			<Button className="flex gap-2" onClick={() => navigate(-1)}>
 				<ArrowLeft />
 				Back
 			</Button>
