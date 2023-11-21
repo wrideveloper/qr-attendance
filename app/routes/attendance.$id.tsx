@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/cloudflare";
-import { Link, useParams } from "@remix-run/react";
+import { useNavigate, useParams } from "@remix-run/react";
 import { useAtom } from "jotai";
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -30,6 +30,8 @@ export default function AttendancePage() {
 	const [timeLeft, setTimeLeft] = useState(QR_UPDATE_DURATION);
 	const progressValue = useMemo(() => (timeLeft / QR_UPDATE_DURATION) * 100, [timeLeft]);
 	const qrTimeout = useRef<NodeJS.Timeout>();
+
+	const navigate = useNavigate();
 
 	const updateRandomUid = useCallback(() => {
 		return setTimeout(() => {
@@ -103,12 +105,10 @@ export default function AttendancePage() {
 					</ScrollArea>
 				</div>
 			</div>
-			<Link to="/">
-				<Button className="flex gap-2 w-full">
-					<ArrowLeft />
-					Back
-				</Button>
-			</Link>
+			<Button className="flex gap-2 w-full" onClick={() => navigate(-1)}>
+				<ArrowLeft />
+				Back
+			</Button>
 		</div>
 	);
 }
