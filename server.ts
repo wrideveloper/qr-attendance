@@ -11,7 +11,6 @@ export const onRequest = createPagesFunctionHandler({
 	getLoadContext: (context) => {
 		return {
 			env: context.env,
-			NANOID_STORE: context.env.NANOID_STORE,
 			ATTENDANCE_QUEUE: context.env.ATTENDANCE_QUEUE,
 		};
 	},

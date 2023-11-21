@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { pushAttendance } from "~/services/attendance.server";
-import { getCurrentValidUid } from "~/services/nanoid.server";
+import { verifyToken } from "~/services/token.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
@@ -32,7 +32,7 @@ export default function SubmitResultPage() {
 			) : (
 				<span className="text-center">You shouldn't be here</span>
 			)}
-			{actionData?.message === "Invalid UID" && (
+			{actionData?.message === "Invalid Token" && (
 				<Button variant="outline" onClick={() => navigate(-1)}>
 					Retry
 				</Button>
@@ -53,14 +53,10 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 		return json({ success: false, message: "Bad Request" }, { status: 400 });
 	}
 
-	const currentValidNanoId = await getCurrentValidUid(context.NANOID_STORE as KVNamespace, formId);
-	if (currentValidNanoId === null) {
-		console.log(`Form ID ${formId} doesn't exist`);
-		return json({ success: false, message: "Form ID doesn't exist" }, { status: 400 });
-	}
-	if (currentValidNanoId !== uid) {
-		console.log(`Invalid UID, expected: ${currentValidNanoId}, actual: ${uid}`);
-		return json({ success: false, message: "Invalid UID" }, { status: 400 });
+	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, uid);
+	if (isTokenValid) {
+		console.log(`Invalid Token`);
+		return json({ success: false, message: "Invalid Token" }, { status: 400 });
 	}
 
 	const bodyForm = (await request.formData()) as FormData;
