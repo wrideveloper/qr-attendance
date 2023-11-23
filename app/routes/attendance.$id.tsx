@@ -23,7 +23,7 @@ export default function AttendancePage() {
 	const params = useParams();
 
 	const serverAttendances = useEventSource(`/sse/attendance/${params.id}`, { event: params.id });
-	const randomUid = useEventSource(`/sse/random/${params.id}`, { event: params.id });
+	const token = useEventSource(`/sse/random/${params.id}`, { event: params.id });
 	const parsedAttendances: Attendance[] = serverAttendances === null ? [] : JSON.parse(serverAttendances);
 	const [attendances, setAttendances] = useAtom(attendanceAtom);
 
@@ -33,23 +33,23 @@ export default function AttendancePage() {
 
 	const navigate = useNavigate();
 
-	const updateRandomUid = useCallback(() => {
+	const updateToken = useCallback(() => {
 		return setTimeout(() => {
 			if (timeLeft <= 0) {
 				setTimeLeft(QR_UPDATE_DURATION);
-				qrTimeout.current = updateRandomUid();
+				qrTimeout.current = updateToken();
 			} else {
-				if (randomUid !== null) {
+				if (token !== null) {
 					setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
 				}
 			}
 		}, PROGRESS_UPDATE_DURATION);
-	}, [randomUid, timeLeft]);
+	}, [token, timeLeft]);
 
 	useEffect(() => {
-		qrTimeout.current = updateRandomUid();
+		qrTimeout.current = updateToken();
 		return () => clearTimeout(qrTimeout.current);
-	}, [updateRandomUid]);
+	}, [updateToken]);
 
 	useEffect(() => {
 		(async () => {
@@ -63,9 +63,9 @@ export default function AttendancePage() {
 	}, [parsedAttendances]);
 
 	useEffect(() => {
-		if (randomUid === null) return;
+		if (token === null) return;
 		setTimeLeft(QR_UPDATE_DURATION);
-	}, [randomUid]);
+	}, [token]);
 
 	return (
 		<div className="flex flex-col items-center justify-center pt-32 gap-8">
@@ -75,7 +75,7 @@ export default function AttendancePage() {
 						<QRCode
 							size={480}
 							style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-							value={randomUid ?? ""}
+							value={token ?? ""}
 							ecLevel="H"
 							logoImage="/wri-logo-small.png"
 							removeQrCodeBehindLogo

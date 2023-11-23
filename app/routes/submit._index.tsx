@@ -14,6 +14,7 @@ import { Input } from "~/components/ui/input";
 import { studyProgram as studyPrograms, universityClass as universityClasses } from "~/data/class";
 import { capitalise } from "~/lib/utils";
 import { type Attendance, attendanceSchema } from "~/schema/attendance";
+import { extractToken } from "~/services/token";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "Submit Attendance | Workshop Riset Informatik" }];
@@ -33,7 +34,7 @@ export default function ScanPage() {
 
 	async function submitAttendance(qrValue: string) {
 		setSubmitting(true);
-		const [formId, randomUid] = qrValue.split("::");
+		const { formId, encryptedString, iv } = extractToken(qrValue);
 		const formData = new FormData();
 		formData.set("id", nanoid());
 		formData.set("fullname", form.getValues("fullname"));
@@ -42,7 +43,7 @@ export default function ScanPage() {
 		formData.set("time", new Date().toISOString());
 		submit(formData, {
 			method: "POST",
-			action: `/submit/${formId}/${randomUid}`,
+			action: `/submit/${formId}/${encryptedString}/${iv}`,
 			navigate: true,
 		});
 	}

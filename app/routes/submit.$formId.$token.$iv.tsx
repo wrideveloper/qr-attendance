@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { pushAttendance } from "~/services/attendance.server";
-import { extractToken, verifyToken } from "~/services/token.server";
+import { verifyToken } from "~/services/token";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
@@ -47,15 +47,15 @@ export default function SubmitResultPage() {
 export async function action({ params, request, context }: ActionFunctionArgs) {
 	const formId = params.formId;
 	const token = params.token;
+	const iv = params.iv;
 
-	if (formId === undefined || token === undefined) {
-		console.log("Form ID or Token can't be empty");
+	if (formId === undefined || token === undefined || iv === undefined) {
+		console.log("Form ID, Token, and IV can't be empty");
 		return json({ success: false, message: "Bad Request" }, { status: 400 });
 	}
 
-	const { encryptedString, iv } = extractToken(token);
-	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, encryptedString, iv);
-	if (isTokenValid) {
+	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, token, iv);
+	if (!isTokenValid) {
 		console.log(`Invalid Token`);
 		return json({ success: false, message: "Invalid Token" }, { status: 403 });
 	}
