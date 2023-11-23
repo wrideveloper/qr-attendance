@@ -4,6 +4,7 @@ import { useAtom } from "jotai";
 import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
+import { ClientOnly } from "remix-utils/client-only";
 import { useEventSource } from "remix-utils/sse/react";
 import { AttendanceCard } from "~/components/attendance/attendance-card";
 import { Button } from "~/components/ui/button";
@@ -86,24 +87,28 @@ export default function AttendancePage() {
 					</div>
 					<Progress value={progressValue} className="bg-slate-300 h-4" />
 				</div>
-				<div>
-					<h1 className="text-2xl font-bold text-slate-800">Attendance</h1>
-					<p className="text-gray-500">Scan the QR code with your phone to mark your attendance.</p>
-					<Separator className="my-4" />
-					<ScrollArea className="w-[480px] h-[420px]">
-						<div className="flex flex-col gap-2 pr-4">
-							{(attendances[params.id as string] ?? []).map((attendance) => (
-								<AttendanceCard
-									key={attendance.id}
-									name={attendance.fullname}
-									class={attendance.class}
-									studyProgram={attendance.studyProgram}
-									time={new Date(attendance.time)}
-								/>
-							))}
+				<ClientOnly>
+					{() => (
+						<div>
+							<h1 className="text-2xl font-bold text-slate-800">Attendance</h1>
+							<p className="text-gray-500">Scan the QR code with your phone to mark your attendance.</p>
+							<Separator className="my-4" />
+							<ScrollArea className="w-[480px] h-[420px]">
+								<div className="flex flex-col gap-2 pr-4">
+									{(attendances[params.id as string] ?? []).map((attendance) => (
+										<AttendanceCard
+											key={attendance.id}
+											name={attendance.fullname}
+											class={attendance.class}
+											studyProgram={attendance.studyProgram}
+											time={new Date(attendance.time)}
+										/>
+									))}
+								</div>
+							</ScrollArea>
 						</div>
-					</ScrollArea>
-				</div>
+					)}
+				</ClientOnly>
 			</div>
 			<Button className="flex gap-2" onClick={() => navigate(-1)}>
 				<ArrowLeft />
