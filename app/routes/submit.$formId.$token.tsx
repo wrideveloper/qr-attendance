@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { pushAttendance } from "~/services/attendance.server";
-import { verifyToken } from "~/services/token.server";
+import { extractToken, verifyToken } from "~/services/token.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
@@ -46,17 +46,18 @@ export default function SubmitResultPage() {
 
 export async function action({ params, request, context }: ActionFunctionArgs) {
 	const formId = params.formId;
-	const uid = params.uid;
+	const token = params.token;
 
-	if (formId === undefined || uid === undefined) {
-		console.log("Form ID or UID can't be empty");
+	if (formId === undefined || token === undefined) {
+		console.log("Form ID or Token can't be empty");
 		return json({ success: false, message: "Bad Request" }, { status: 400 });
 	}
 
-	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, uid);
+	const { encryptedString, iv } = extractToken(token);
+	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, encryptedString, iv);
 	if (isTokenValid) {
 		console.log(`Invalid Token`);
-		return json({ success: false, message: "Invalid Token" }, { status: 400 });
+		return json({ success: false, message: "Invalid Token" }, { status: 403 });
 	}
 
 	const bodyForm = (await request.formData()) as FormData;
@@ -73,6 +74,6 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 
 	await pushAttendance(context.ATTENDANCE_QUEUE as KVNamespace, formId, attendance.data);
 
-	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${uid}`);
+	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${token}`);
 	return json({ success: true, message: "Successfully submitted an attendance" });
 }

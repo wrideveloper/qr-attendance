@@ -11,16 +11,18 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
 		// send an event every REFRESH_INTERVAL
 		(async () => {
 			// send an initial event
+			const token = await createToken(key, params.id as string);
 			send({
 				event: params.id,
-				data: await createToken(key, params.id as string),
+				data: token,
 			});
 
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			for await (let _ of interval(REFRESH_INTERVAL, { signal: request.signal })) {
+				const token = await createToken(key, params.id as string);
 				send({
 					event: params.id,
-					data: await createToken(key, params.id as string),
+					data: token,
 				});
 			}
 		})();
