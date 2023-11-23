@@ -2,6 +2,7 @@ import type { MetaFunction } from "@remix-run/cloudflare";
 import { Link, useNavigate } from "@remix-run/react";
 import { useAtom } from "jotai";
 import { ListChecksIcon } from "lucide-react";
+import { ClientOnly } from "remix-utils/client-only";
 import { CreateAttendanceFormDialog } from "~/components/attendance/create-attendance-form-dialog";
 import { FormCard } from "~/components/attendance/form-card";
 import { Button } from "~/components/ui/button";
@@ -46,20 +47,24 @@ export default function Index() {
 					<CreateAttendanceFormDialog onCreate={handleCreateAttendanceForm} />
 				</div>
 			</div>
-			{attendanceFormsValues.length > 0 && (
-				<div className="flex-1">
-					<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
-					<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
-					<Separator className="my-4" />
-					<ScrollArea className="h-[500px]">
-						<div className="flex flex-col gap-4 pr-4">
-							{attendanceFormsValues.map((form) => (
-								<FormCard key={form.id} {...form} />
-							))}
+			<ClientOnly>
+				{() =>
+					attendanceFormsValues.length > 0 && (
+						<div className="flex-1">
+							<h1 className="text-2xl font-semibold text-slate-800">List of Attendance Forms</h1>
+							<p className="text-sm text-slate-600">These are past attendance forms on your device</p>
+							<Separator className="my-4" />
+							<ScrollArea className="h-[500px]">
+								<div className="flex flex-col gap-4 pr-4">
+									{attendanceFormsValues.map((form) => (
+										<FormCard key={form.id} {...form} />
+									))}
+								</div>
+							</ScrollArea>
 						</div>
-					</ScrollArea>
-				</div>
-			)}
+					)
+				}
+			</ClientOnly>
 		</div>
 	);
 }
