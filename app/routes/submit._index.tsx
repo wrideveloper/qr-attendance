@@ -40,6 +40,7 @@ export default function ScanPage() {
 		formData.set("fullname", form.getValues("fullname"));
 		formData.set("class", form.getValues("class"));
 		formData.set("studyProgram", form.getValues("studyProgram"));
+		formData.set("feedback", form.getValues("feedback"));
 		formData.set("time", new Date().toISOString());
 		submit(formData, {
 			method: "POST",
