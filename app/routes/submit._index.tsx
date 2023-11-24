@@ -68,6 +68,19 @@ export default function ScanPage() {
 						/>
 						<FormField
 							control={form.control}
+							name="feedback"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Feedback</FormLabel>
+									<FormControl>
+										<Input {...field} placeholder="Feedback" />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
 							name="class"
 							render={({ field }) => (
 								<FormItem>

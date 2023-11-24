@@ -22,7 +22,7 @@ export default function SubmitResultPage() {
 					)}
 					<p
 						className={cn(
-							"text-3xl font-medium text-center",
+							"text-2xl font-medium text-center",
 							actionData.success ? "text-green-500" : "text-red-500"
 						)}
 					>

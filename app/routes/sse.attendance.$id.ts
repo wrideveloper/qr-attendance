@@ -8,7 +8,7 @@ export async function loader({ request, params, context }: LoaderFunctionArgs) {
 	return eventStream(request.signal, (send) => {
 		async function run() {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			for await (let _ of interval(250, { signal: request.signal })) {
+			for await (let _ of interval(1000, { signal: request.signal })) {
 				const attendances = await getAllAttendances(
 					context.ATTENDANCE_QUEUE as KVNamespace,
 					params.id as string
