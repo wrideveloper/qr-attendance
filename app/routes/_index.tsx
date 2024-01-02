@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/cloudflare";
+import type { MetaFunction } from "@remix-run/node";
 import { Link, useNavigate } from "@remix-run/react";
 import { useAtom } from "jotai";
 import { ListChecksIcon } from "lucide-react";

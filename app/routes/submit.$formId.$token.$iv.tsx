@@ -1,4 +1,4 @@
-import { json, type ActionFunctionArgs } from "@remix-run/cloudflare";
+import { json, type ActionFunctionArgs } from "@remix-run/node";
 import { Link, useActionData, useNavigate } from "@remix-run/react";
 import { AlertCircleIcon, CheckCircleIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";

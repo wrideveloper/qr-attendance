@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix build --sourcemap && sentry-upload-sourcemaps --org workshop-riset-informatika --project javascript-remix",
-    "dev": "remix dev --manual -c \"npm run start\"",
-    "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public --kv ATTENDANCE_QUEUE",
+    "dev": "remix dev",
     "typecheck": "tsc",
     "format": "prettier app --write"
   },
@@ -21,9 +20,8 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
-    "@remix-run/cloudflare": "^2.2.0",
-    "@remix-run/cloudflare-pages": "^2.2.0",
     "@remix-run/css-bundle": "^2.2.0",
+    "@remix-run/node": "^2.4.1",
     "@remix-run/react": "^2.2.0",
     "@remix-run/serve": "^2.2.0",
     "@sentry/remix": "^7.91.0",
@@ -47,7 +45,6 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20231025.0",
     "@remix-run/dev": "^2.2.0",
     "@remix-run/eslint-config": "^2.2.0",
     "@types/react": "^18.2.20",

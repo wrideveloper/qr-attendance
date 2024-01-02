@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { MetaFunction } from "@remix-run/cloudflare";
+import type { MetaFunction } from "@remix-run/node";
 import { Link, useSubmit } from "@remix-run/react";
 import { ArrowLeft } from "lucide-react";
 import { nanoid } from "nanoid";
