@@ -22,6 +22,7 @@ export function handleError(error: Error, { request }: { request: Request }) {
 Sentry.init({
 	dsn: process.env.SENTRY_DSN,
 	tracesSampleRate: 0.25,
+	environment: process.env.NODE_ENV,
 });
 
 export default function handleRequest(

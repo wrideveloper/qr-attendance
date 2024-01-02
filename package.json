@@ -4,8 +4,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build --sourcemap && sentry-upload-sourcemaps --org workshop-riset-informatika --project javascript-remix",
-    "dev": "remix dev",
+    "build": "remix build --sourcemap && sentry-upload-sourcemaps",
+    "dev": "remix dev --manual",
+    "start": "remix-serve ./build/index.js",
     "typecheck": "tsc",
     "format": "prettier app --write"
   },

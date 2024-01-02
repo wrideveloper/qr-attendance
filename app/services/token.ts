@@ -1,5 +1,7 @@
+import { webcrypto } from "node:crypto";
+
 async function generateKey(key: string) {
-	return crypto.subtle.importKey(
+	return webcrypto.subtle.importKey(
 		"raw",
 		new TextEncoder().encode(key),
 		{
@@ -12,7 +14,7 @@ async function generateKey(key: string) {
 }
 
 async function generateIv() {
-	return crypto.getRandomValues(new Uint8Array(12));
+	return webcrypto.getRandomValues(new Uint8Array(12));
 }
 
 function arrayBufferToHexString(buffer: ArrayBuffer) {
@@ -42,7 +44,7 @@ export async function createToken(key: string, formId: string) {
 	const expiryBytes = new TextEncoder().encode(`${expiry}`);
 	const encryptionKey = await generateKey(key);
 	const iv = await generateIv();
-	const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", length: 256, iv }, encryptionKey, expiryBytes);
+	const encrypted = await webcrypto.subtle.encrypt({ name: "AES-GCM", length: 256, iv }, encryptionKey, expiryBytes);
 	const encryptedString = arrayBufferToHexString(encrypted);
 	const ivString = arrayBufferToHexString(iv);
 	return `${formId}::${encryptedString}::${ivString}`;
@@ -59,7 +61,7 @@ export async function verifyToken(key: string, token: string, iv: string) {
 	const ivBytes = hexStringToArrayBuffer(iv);
 	const tokenBytes = hexStringToArrayBuffer(token);
 	const decryptionKey = await generateKey(key);
-	const decrypted = await crypto.subtle.decrypt(
+	const decrypted = await webcrypto.subtle.decrypt(
 		{ name: "AES-GCM", length: 256, iv: ivBytes },
 		decryptionKey,
 		tokenBytes
