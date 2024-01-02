@@ -9,3 +9,6 @@ functions/
 .wrangler/
 
 .dev.vars
+
+# Sentry Config File
+.sentryclirc

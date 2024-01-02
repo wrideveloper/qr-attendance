@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/remix";
 /**
  * By default, Remix will handle generating the HTTP Response for you.
  * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
@@ -8,6 +9,15 @@ import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
 import isbot from "isbot";
 import { renderToReadableStream } from "react-dom/server";
+
+export function handleError(error: Error, { request }: { request: Request }) {
+	Sentry.captureRemixServerException(error, "remix.attendance", request);
+}
+
+Sentry.init({
+	dsn: process.env.SENTRY_DSN,
+	tracesSampleRate: 0.25,
+});
 
 export default async function handleRequest(
 	request: Request,

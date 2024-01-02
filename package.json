@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
+    "build": "remix build --sourcemap && sentry-upload-sourcemaps --org workshop-riset-informatika --project javascript-remix",
     "dev": "remix dev --manual -c \"npm run start\"",
     "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public --kv ATTENDANCE_QUEUE",
     "typecheck": "tsc",
@@ -26,6 +26,7 @@
     "@remix-run/css-bundle": "^2.2.0",
     "@remix-run/react": "^2.2.0",
     "@remix-run/serve": "^2.2.0",
+    "@sentry/remix": "^7.91.0",
     "@types/papaparse": "^5.3.11",
     "@yudiel/react-qr-scanner": "^1.2.0",
     "class-variance-authority": "^0.7.0",
