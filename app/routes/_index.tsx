@@ -9,7 +9,7 @@ import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { AttendanceForm } from "~/schema/attendance";
-import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance";
+import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance-atom";
 
 export const meta: MetaFunction = () => {
 	return [{ title: "WRI QR Attendance" }, { name: "description", content: "Welcome to Remix!" }];

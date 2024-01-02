@@ -5,7 +5,7 @@ import { exportFormResultToCsv } from "~/services/exporter";
 import { downloadStringAsFile } from "~/services/download";
 import { Link } from "@remix-run/react";
 import { useAtom } from "jotai";
-import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance";
+import { attendanceAtom, attendanceFormAtom } from "~/stores/attendance-atom";
 import type { AttendanceForm } from "~/schema/attendance";
 
 type FormCardProps = {

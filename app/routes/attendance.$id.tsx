@@ -12,7 +12,7 @@ import { Progress } from "~/components/ui/progress";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
 import type { Attendance } from "~/schema/attendance";
-import { attendanceAtom } from "~/stores/attendance";
+import { attendanceAtom } from "~/stores/attendance-atom";
 
 const QR_UPDATE_DURATION = 10_000; // 5 seconds
 const PROGRESS_UPDATE_DURATION = 100; // 100ms

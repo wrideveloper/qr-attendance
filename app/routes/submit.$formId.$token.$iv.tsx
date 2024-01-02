@@ -6,6 +6,7 @@ import { cn } from "~/lib/utils";
 import { attendanceSchema } from "~/schema/attendance";
 import { pushAttendance } from "~/services/attendance.server";
 import { verifyToken } from "~/services/token";
+import { ttlStorage } from "~/stores/ttl-storage.server";
 
 export default function SubmitResultPage() {
 	const actionData = useActionData<typeof action>();
@@ -72,7 +73,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 		return json({ success: false, message: "Invalid Attendance" }, { status: 400 });
 	}
 
-	await pushAttendance(context.ATTENDANCE_QUEUE as KVNamespace, formId, attendance.data);
+	await pushAttendance(ttlStorage, formId, attendance.data);
 
 	console.log(`Successfully submitted an attendance for formId: ${formId} | uid: ${token}`);
 	return json({ success: true, message: "Successfully submitted an attendance" });
