@@ -8,8 +8,7 @@ ENV NODE_ENV production
 FROM base as deps
 
 WORKDIR /myapp
-
-ADD package.json .npmrc ./
+ADD package.json .sentryclirc ./
 RUN npm install --include=dev
 
 # Setup production node_modules
@@ -18,7 +17,7 @@ FROM base as production-deps
 WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
-ADD package.json .npmrc ./
+ADD package.json .sentryclirc ./
 RUN npm prune --omit=dev
 
 # Build the app
@@ -29,17 +28,13 @@ WORKDIR /myapp
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
 ADD . .
-RUN npm run build
+RUN npm run build:prod
 
 # Finally, build the production image with minimal footprint
 FROM base
 
-ENV DATABASE_URL=file:/data/sqlite.db
 ENV PORT="8080"
 ENV NODE_ENV="production"
-
-# add shortcut for connecting to database CLI
-RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
 
 WORKDIR /myapp
 
@@ -49,4 +44,4 @@ COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
 COPY --from=build /myapp/package.json /myapp/package.json
 
-ENTRYPOINT [ "./start.sh" ]
+CMD ["npm", "run", "start"]

@@ -1,0 +1,16 @@
+# flyctl launch added from .gitignore
+**/node_modules
+
+.cache
+build
+public/build
+**/.env
+
+**/functions
+**/.wrangler
+
+**/.dev.vars
+
+# flyctl launch added from node_modules/.pnpm/tailwindcss@3.4.0/node_modules/tailwindcss/stubs/.gitignore
+!node_modules/.pnpm/tailwindcss@3.4.0/node_modules/tailwindcss/stubs/**/*
+fly.toml
