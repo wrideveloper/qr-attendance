@@ -1,7 +1,16 @@
 import { captureRemixErrorBoundaryError } from "@sentry/remix";
 import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction } from "@remix-run/node";
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useRouteError } from "@remix-run/react";
+import {
+	Links,
+	LiveReload,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+	useLoaderData,
+	useRouteError,
+} from "@remix-run/react";
 import tailwindcss from "~/tailwind.css";
 import rubik400 from "@fontsource/rubik/400.css";
 import rubik500 from "@fontsource/rubik/500.css";
@@ -23,7 +32,16 @@ export const ErrorBoundary = () => {
 	return <div>Something went wrong</div>;
 };
 
+export async function loader() {
+	return {
+		env: {
+			SENTRY_DSN: process.env.SENTRY_DSN,
+		},
+	};
+}
+
 export default function App() {
+	const data = useLoaderData<typeof loader>();
 	return (
 		<html lang="en" className="h-full">
 			<head>
@@ -35,6 +53,11 @@ export default function App() {
 			<body className="h-full">
 				<Outlet />
 				<ScrollRestoration />
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `window.env = ${JSON.stringify(data.env)}`,
+					}}
+				/>
 				<Scripts />
 				<LiveReload />
 			</body>

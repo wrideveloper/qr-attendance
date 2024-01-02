@@ -10,7 +10,8 @@ import { startTransition, StrictMode, useEffect } from "react";
 import { hydrateRoot } from "react-dom/client";
 
 Sentry.init({
-	dsn: process.env.SENTRY_DSN,
+	// we acquire the DSN from the window object that we injected from the root.tsx
+	dsn: (window as any).env.SENTRY_DSN,
 	tracesSampleRate: 0.25,
 	replaysSessionSampleRate: 0.1,
 	replaysOnErrorSampleRate: 1,
