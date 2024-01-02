@@ -6,7 +6,7 @@ import { createToken } from "~/services/token";
 const REFRESH_INTERVAL = 10_000;
 
 export async function loader({ request, params, context }: LoaderFunctionArgs) {
-	const key = (context.env as any).TOKEN_SECRET as string;
+	const key = process.env.TOKEN_SECRET as string;
 	return eventStream(request.signal, (send) => {
 		// send an event every REFRESH_INTERVAL
 		(async () => {

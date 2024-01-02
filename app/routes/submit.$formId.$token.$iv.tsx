@@ -55,7 +55,7 @@ export async function action({ params, request, context }: ActionFunctionArgs) {
 		return json({ success: false, message: "Bad Request" }, { status: 400 });
 	}
 
-	const isTokenValid = await verifyToken((context.env as any).TOKEN_SECRET as string, token, iv);
+	const isTokenValid = await verifyToken(process.env.TOKEN_SECRET as string, token, iv);
 	if (!isTokenValid) {
 		console.log(`Invalid Token`);
 		return json({ success: false, message: "Invalid Token" }, { status: 403 });
