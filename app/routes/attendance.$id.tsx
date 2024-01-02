@@ -39,10 +39,8 @@ export default function AttendancePage() {
 			if (timeLeft <= 0) {
 				setTimeLeft(QR_UPDATE_DURATION);
 				qrTimeout.current = updateToken();
-			} else {
-				if (token !== null) {
-					setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
-				}
+			} else if (token !== null) {
+				setTimeLeft((prev) => prev - PROGRESS_UPDATE_DURATION);
 			}
 		}, PROGRESS_UPDATE_DURATION);
 	}, [token, timeLeft]);
