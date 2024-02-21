@@ -10,7 +10,7 @@ import { PassThrough } from "node:stream";
 import type { AppLoadContext, EntryContext } from "@remix-run/node";
 import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
+import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 
 const ABORT_DELAY = 5_000;
@@ -22,7 +22,7 @@ export function handleError(error: Error, { request }: { request: Request }) {
 Sentry.init({
 	dsn: process.env.SENTRY_DSN,
 	tracesSampleRate: 0.25,
-	environment: process.env.NODE_ENV,
+	environment: process.env.NODE_ENV
 });
 
 export default function handleRequest(
@@ -61,7 +61,7 @@ function handleBotRequest(
 					resolve(
 						new Response(stream, {
 							headers: responseHeaders,
-							status: responseStatusCode,
+							status: responseStatusCode
 						})
 					);
 
@@ -78,7 +78,7 @@ function handleBotRequest(
 					if (shellRendered) {
 						console.error(error);
 					}
-				},
+				}
 			}
 		);
 
@@ -107,7 +107,7 @@ function handleBrowserRequest(
 					resolve(
 						new Response(stream, {
 							headers: responseHeaders,
-							status: responseStatusCode,
+							status: responseStatusCode
 						})
 					);
 
@@ -124,7 +124,7 @@ function handleBrowserRequest(
 					if (shellRendered) {
 						console.error(error);
 					}
-				},
+				}
 			}
 		);
 

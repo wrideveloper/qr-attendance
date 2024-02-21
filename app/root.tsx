@@ -1,9 +1,7 @@
 import { captureRemixErrorBoundaryError } from "@sentry/remix";
-import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction } from "@remix-run/node";
 import {
 	Links,
-	LiveReload,
 	Meta,
 	Outlet,
 	Scripts,
@@ -11,20 +9,11 @@ import {
 	useLoaderData,
 	useRouteError,
 } from "@remix-run/react";
-import tailwindcss from "~/tailwind.css";
-import rubik400 from "@fontsource/rubik/400.css";
-import rubik500 from "@fontsource/rubik/500.css";
-import rubik600 from "@fontsource/rubik/600.css";
-import rubik700 from "@fontsource/rubik/700.css";
-
-export const links: LinksFunction = () => [
-	...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-	{ rel: "stylesheet", href: tailwindcss },
-	{ rel: "stylesheet", href: rubik400 },
-	{ rel: "stylesheet", href: rubik500 },
-	{ rel: "stylesheet", href: rubik600 },
-	{ rel: "stylesheet", href: rubik700 },
-];
+import "~/tailwind.css";
+import "@fontsource/rubik/400.css";
+import "@fontsource/rubik/500.css";
+import "@fontsource/rubik/600.css";
+import "@fontsource/rubik/700.css";
 
 export const ErrorBoundary = () => {
 	const error = useRouteError();
@@ -60,7 +49,6 @@ export default function App() {
 					}}
 				/>
 				<Scripts />
-				<LiveReload />
 			</body>
 		</html>
 	);
